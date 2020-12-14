@@ -1,4 +1,4 @@
-![Docker](https://github.com/VSLCatena/docker-laravel/workflows/Docker/badge.svg)
+![Docker](https://github.com/Kipjr/docker-laravel/workflows/Docker/badge.svg)
 
 *Docker container for laravel apps, in this case vslcatena/mensa*
 
