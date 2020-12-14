@@ -1,3 +1,5 @@
+![Docker](https://github.com/VSLCatena/docker-laravel/workflows/Docker/badge.svg)
+
 *Docker container for laravel apps, in this case vslcatena/mensa*
 
 APP_NAME = mensa (must be EXACTLY the same as repo name!)
