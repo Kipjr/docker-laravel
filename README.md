@@ -1,3 +1,5 @@
+![Docker](https://github.com/VSLCatena/docker-laravel/workflows/Docker/badge.svg)
+
 *Docker container for laravel apps, in this case vslcatena/mensa*
 
 APP_NAME = mensa (must be EXACTLY the same as repo name!)
@@ -47,6 +49,8 @@ APP_REPO = https://github.com/vslcatena/mensa.git
 ## Steps
 
 1. ```git clone https://github.com/vslcatena/docker-laravel``` 
+
+2. Get .env.example from your repo and fill in your variables
 
 3. Check configuration in docker-compose 
 
