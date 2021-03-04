@@ -2,18 +2,18 @@ version: '3.8'
 services:
 
   #Apache Service
-  webserver:
-    hostname: httpd
-    image: httpd:2.4.43
-    container_name: webserver
-    depends_on:
-      - app
-    volumes:
-      - "./etc/apache2/:/etc/apache2/"
-    restart: unless-stopped
-    tty: true
-    networks:
-      - net
+  #webserver:
+  #  hostname: httpd
+  #  image: httpd:2.4.43
+  #  container_name: webserver
+  #  depends_on:
+  #    - app
+  #  volumes:
+  #    - "./etc/apache2/:/etc/apache2/"
+  #  restart: unless-stopped
+  #  tty: true
+  #  networks:
+  #    - net
 
   #MySQL Service
   db:
@@ -30,6 +30,45 @@ services:
       - ./etc/mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - net
+    restart: always
+
+  #phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    hostname: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: db
+    ports:
+      - "8082:80"
+    networks:
+      - net
+
+  #ldap Service
+  ldap:
+    hostname: ldap
+    container_name: ldap
+    image: 'osixia/openldap:1.1.8'
+    networks:
+      - net
+    restart: always
+
+  #phpldapadmin Service
+  phpldapadmin:
+    hostname: phpldapadmin
+    container_name: phpldapadmin
+    image: 'osixia/phpldapadmin:0.9.0'
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: ldap
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - 8081:80
+    networks:
+      - net  
+    restart: always
 
   #PHP Service
   app:
@@ -38,35 +77,39 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        APP_NAME: "mensa"
-        APP_REPO: "https://github.com/vslcatena/mensa.git"
-        APP_REPO_BRANCHL: "dev"
+        APP_NAME: baragenda
+        APP_REPO: https://github.com/vslcatena/baragenda.git
+        APP_REPO_BRANCH: dev
     container_name: app
     depends_on: 
       - db    
     restart: unless-stopped
     tty: true
     environment:
-      - SERVICE_NAME: app
-      - SERVICE_TAGS: dev
-      - APP_NAME: mensa
+      APP_NAME: baragenda
     ports:
-      - 1234:8080
+      - 8080:8080
     volumes:
       - ./laravel-app:/var/www/laravel
       - "./etc/php/local.ini:/usr/local/etc/php/conf.d/local.ini"
     networks:
       - net
-    command: bash -c "
-             if ls /var/www/${APP_NAME} 2> /tmp/test.txt; then mv /var/www/${APP_NAME} /var/www/laravel/${APP_NAME} ; else echo 0; fi
-             && cd /var/www/laravel/${APP_NAME}
+    command: bash -c '
+             $$(if [ ! "$$(ls -A /var/www/laravel/)" ]; then cp /var/www/laravel.template/* /var/www/laravel/ -r; fi)
+             && cd /var/www/laravel/$$APP_NAME
              && php artisan migrate
-             && php artisan serve --port=8080 --host=app"
+             && php artisan serve --port=8080 --host=app'
 
 #Docker Networks
 networks:
   net:
     driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 192.168.31.0/29 #192.168.31.1 - 192.168.31.6 (bc:7)
+    driver_opts:
+     com.docker.network.bridge.name: laravel_net
 volumes:
   dbdata:
     driver: local
