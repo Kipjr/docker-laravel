@@ -58,29 +58,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        APP_NAME: baragenda
-        APP_REPO: https://github.com/vslcatena/baragenda.git
-        APP_REPO_BRANCH: dev
     container_name: app
     depends_on: 
       - db    
-    restart: unless-stopped
     tty: true
     environment:
-      APP_NAME: baragenda
+      APP_REPO: https://github.com/vslcatena/baragenda.git
+      APP_REPO_BRANCH: dev
     ports:
-      - 8080:8080
+      - 6666:8080
     volumes:
-      - ./laravel-app:/var/www/laravel
+      - ./laravel-app:/var/www/laravel/app
       - "./etc/php/local.ini:/usr/local/etc/php/conf.d/local.ini"
     networks:
       - net
-    command: bash -c '
-             $$(if [ ! "$$(ls -A /var/www/laravel/)" ]; then cp /var/www/laravel.template/* /var/www/laravel/ -r; fi)
-             && cd /var/www/laravel/$$APP_NAME
-             && php artisan migrate
-             && php artisan serve --port=8080 --host=app'
+    command: setup
 
 #Docker Networks
 networks:
