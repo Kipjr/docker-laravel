@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y \
 #install NPM
 RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash -
 RUN apt-get install -y nodejs
+RUN npm install --global yarn
+
 
 #install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
