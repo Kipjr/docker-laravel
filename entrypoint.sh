@@ -3,7 +3,7 @@
 cd /var/www/laravel/
 
 setup () {
-    if [[ -d './app' ]]; then 
+    if [ -d './app' ]; then 
       if [[ $(ls ./app | wc -l) < 1 ]]; then 
         git clone $APP_REPO app
         cd /var/www/laravel/app
@@ -11,18 +11,18 @@ setup () {
         cp .env.example .env
         echo -e "\nNow in $PWD: \n$(ls -laA)\n\nEdit the .env file and run 'init'\n"
       else 
-        echo "folder ./laravel-app not empty.. unable to setup.. running init instead"
+        echo "folder ./app not empty.. unable to setup.. running init instead"
         init
       fi
     else 
-      echo "use docker-compose with volume './laravel-app:/var/www/laravel/app' "
+      echo "use docker-compose with volume './app:/var/www/laravel/app' "
     fi
 }
 
 init () {
     cd /var/www/laravel/app
-    if [[ -f .env ]]; then
-      if [[ $(diff .env .env.example | wc -l) > 0 ]]; then
+    if [ -f .env ]; then
+      if [ $(diff .env .env.example | wc -l) > 0 ]; then
         php ../composer.phar update
         php ../composer.phar install
         php artisan key:generate #needs .env

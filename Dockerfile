@@ -1,4 +1,4 @@
-FROM php:7.3-fpm
+FROM php:8-fpm
 
 # Set working directory
 RUN mkdir /var/www/laravel -p
@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libldb-dev \
     libzip-dev \
     libldap2-dev \
+    libonig-dev \
     nano \
     git \
     curl
