@@ -84,7 +84,7 @@ services:
       APP_REPO: https://github.com/vslcatena/baragenda.git
       APP_REPO_BRANCH: dev
     ports:
-      - 6666:8080
+      - 8080:8080
     volumes:
       - ./laravel-app:/var/www/laravel/app
       - "./etc/php/local.ini:/usr/local/etc/php/conf.d/local.ini"
